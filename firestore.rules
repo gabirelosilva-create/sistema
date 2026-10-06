@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /report/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.json is string
+                            && request.resource.data.json.size() < 900000;
+    }
+    match /done/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.rid is string;
+      allow delete: if true;
+    }
+    match /photos/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.img is string
+                            && request.resource.data.img.size() < 400000;
+      allow delete: if true;
+    }
+  }
+}
