@@ -1,155 +1,282 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Abastecer Gôndola — Loja 27</title>
-  <meta name="description" content="Auditoria e abastecimento de gôndola da Loja 27: importe a planilha, confira os itens por setor, registre entregas, faltas e fotos e acompanhe tudo no dashboard.">
-  <meta property="og:site_name" content="Abastecer Gôndola — Loja 27">
-  <meta property="og:title" content="Abastecer Gôndola — Loja 27">
-  <meta property="og:description" content="Auditoria e abastecimento de gôndola da Loja 27: importe a planilha, confira os itens por setor, registre entregas, faltas e fotos e acompanhe tudo no dashboard.">
-  <meta name="theme-color" content="#d4000f">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
-  <!-- SheetJS para leitura e exportação de Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
-  <script src="/app.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relatório de Entrada</title>
+<style>
+:root{--red:#c8102e;--red-d:#7d0a1c;--yel:#ffc72c;--yel-l:#fff3cc;--bg:#f5f2ea;--card:#fff;--tx:#241616;--mut:#7b6c62;--bd:#e7e0d0;--neg:#c8102e;--sh:0 1px 2px rgba(36,22,22,.06),0 6px 20px rgba(36,22,22,.06);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17110a;--card:#241b10;--tx:#fbf0d4;--mut:#c5b184;--bd:#4a3a15;--yel-l:#3d3209;--neg:#ff7a7a;--sh:none}}
+:root[data-theme="dark"]{--bg:#17110a;--card:#241b10;--tx:#fbf0d4;--mut:#c5b184;--bd:#4a3a15;--yel-l:#3d3209;--neg:#ff7a7a;--sh:none}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+header{background:var(--red);background:linear-gradient(115deg,var(--red-d),var(--red));color:#fff;padding:20px 20px 22px;border-bottom:5px solid var(--yel)}
+.hw{max-width:1400px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:46px;height:46px;border-radius:12px;background:var(--yel);color:var(--red-d);display:grid;place-items:center;font-weight:900;font-size:18px;letter-spacing:-1px}
+.eye{font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;opacity:.85;font-weight:600}
+header h1{margin:0;font-size:clamp(22px,4vw,30px);letter-spacing:-.4px;font-weight:800}
+.st{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.22);padding:6px 12px;border-radius:99px;font-size:12.5px;font-weight:600}
+.st i{width:9px;height:9px;border-radius:50%;background:var(--yel);box-shadow:0 0 0 0 rgba(255,199,44,.7);animation:pl 1.8s infinite}
+.st.off i{animation:none;background:#bbb}
+@keyframes pl{70%{box-shadow:0 0 0 8px rgba(255,199,44,0)}100%{box-shadow:0 0 0 0 rgba(255,199,44,0)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:4px 12px;border-radius:8px;font-size:12.5px}
+main{max-width:1400px;margin:0 auto;padding:16px}
+.tabs{display:inline-flex;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:4px;margin-bottom:14px;box-shadow:var(--sh)}
+.tab{border:0;background:none;color:var(--mut);padding:9px 20px;border-radius:9px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.tab.on{background:var(--red);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--bd);border-top:4px solid var(--red);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;color:var(--tx);font:inherit;box-shadow:var(--sh)}
+.kpi:nth-child(2){border-top-color:var(--yel)}
+.kpi b{display:block;font-size:30px;line-height:1.1;font-weight:800}
+.kpi span{font-size:12.5px;color:var(--mut);font-weight:600}
+.kpi.on{background:var(--yel-l);outline:2px solid var(--red)}
+.tool{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer;font-size:13.5px;font-family:inherit}
+.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.yel{background:var(--yel);border-color:var(--yel);color:#3a0a0a}
+.btn:hover{filter:brightness(.95)}
+input[type=search],select{padding:9px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font-size:14px;min-width:0;font-family:inherit}
+input[type=search]{flex:1 1 220px}
+label.tg{font-size:13px;display:flex;gap:6px;align-items:center;cursor:pointer;font-weight:600}
+.prog{flex:1 1 100%;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--mut);font-weight:600}
+.pb{flex:1;height:8px;background:var(--bd);border-radius:9px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--yel),var(--red));transition:width .4s}
+.drop{border:1.5px dashed var(--red);border-radius:12px;padding:11px;text-align:center;background:var(--yel-l);margin-bottom:12px;font-weight:600;font-size:13.5px}
+.drop.over{background:var(--yel)}
+.count{font-size:13px;color:var(--mut);margin:4px 2px 8px;font-weight:600}
+.wrap{background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:var(--sh);overflow:hidden}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{background:var(--red-d);color:#fff;padding:10px 8px;text-align:left;cursor:pointer;white-space:nowrap;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
+td{padding:8px;border-bottom:1px solid var(--bd);vertical-align:middle}
+tr.g td{background:var(--yel);color:#3a0a0a;font-weight:800;font-size:13px;padding:7px 12px;letter-spacing:.3px;text-transform:uppercase}
+tr.g small{font-weight:700;opacity:.7;margin-left:8px;text-transform:none}
+tr.it td:first-child{border-left:5px solid transparent}
+tr.sy td:first-child{border-left-color:var(--yel)}
+tr.sr td:first-child{border-left-color:var(--red)}
+tr.it:hover td{background:var(--yel-l)}
+tr.done{opacity:.45}tr.done .pr b{text-decoration:line-through}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.neg{color:var(--neg);font-weight:800}
+.pw{display:flex;gap:10px;align-items:center}
+.pr b{display:block;font-size:13.5px}.pr small{color:var(--mut);font-size:11.5px}
+.th{width:38px;height:38px;border-radius:8px;object-fit:cover;cursor:zoom-in;flex:none;border:1px solid var(--bd)}
+.cam{width:38px;height:38px;border-radius:8px;border:1.5px dashed var(--bd);background:none;cursor:pointer;flex:none;font-size:15px}
+input[type=checkbox]{width:19px;height:19px;accent-color:var(--red);cursor:pointer}
+.bd{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;margin:1px 3px 1px 0;white-space:nowrap}
+.bd.y{background:var(--yel);color:#3a0a0a}.bd.r{background:var(--red);color:#fff}.bd.o{background:transparent;color:var(--red);border:1.5px solid var(--red)}
+.leg{margin-top:14px;font-size:12px;color:var(--mut);line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.ph{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column}
+.pi{aspect-ratio:4/3;background:var(--yel-l);display:grid;place-items:center;cursor:pointer;overflow:hidden;color:var(--mut);font-size:13px;font-weight:600;border:0;width:100%}
+.pi img{width:100%;height:100%;object-fit:cover}
+.pc{padding:10px 12px}.pc b{display:block;font-size:13.5px}.pc small{color:var(--mut);font-size:11.5px}
+#lb{position:fixed;inset:0;background:rgba(20,8,8,.88);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px}
+#lb.on{display:flex}#lb img{max-width:100%;max-height:70vh;border-radius:12px}
+#lb p{color:#fff;margin:0;font-weight:700;text-align:center}
+#lb div{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--red-d);color:#fff;padding:10px 18px;border-radius:10px;font-size:13.5px;font-weight:600;z-index:60;display:none;max-width:90vw}
+.pt{display:none}
+[hidden]{display:none!important}
+@media (max-width:760px){
+ thead{display:none}
+ table,tbody,tr,td{display:block}
+ tr.it{display:grid;grid-template-columns:28px 1fr 1fr;gap:2px 8px;padding:10px 12px;border-bottom:1px solid var(--bd)}
+ tr.it td{border:0!important;padding:2px 0}
+ tr.it td.ck{grid-column:1;grid-row:1}
+ tr.it td.pr{grid-column:2/4;grid-row:1}
+ tr.it td.cd,tr.it td.x{display:none}
+ tr.it td.n{text-align:left;font-size:12.5px}
+ tr.it td.n:before{content:attr(data-l) ": ";color:var(--mut);font-size:11px}
+ tr.it td.al{grid-column:1/4}
+ .st{margin-left:0}
+}
+@media print{
+ @page{size:A4 landscape;margin:8mm}
+ body{background:#fff;color:#000}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ header{padding:6px 0;background:#fff!important;color:#000;border-bottom:4px solid var(--red)}
+ .logo{width:30px;height:30px;font-size:12px}.eye{opacity:1}
+ header h1{font-size:18px}.chip{background:none;border:0;color:#000;padding:0 10px 0 0;font-size:11px}
+ .tool,.drop,.kpis,.count,.noprint,.tabs,.st,#lb,#toast{display:none!important}
+ .pt{display:block;font-size:11px;margin:4px 0}
+ main{padding:0;max-width:none}
+ .wrap{box-shadow:none;border-radius:0}
+ table{font-size:9.5px}thead{display:table-header-group}
+ th{background:var(--red-d)!important;color:#fff!important;padding:4px}
+ td{padding:3px 4px}.th{width:24px;height:24px}
+ tr{break-inside:avoid}tr.g{break-after:avoid}
+ tr.it:hover td{background:none}tr.done{opacity:1}
+ .grid{grid-template-columns:repeat(4,1fr);gap:8px}.ph{box-shadow:none;break-inside:avoid}.ph.no{display:none}
+ .leg{color:#000;font-size:9px}
+}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="brand-tag" aria-hidden="true"><small>LOJA</small>27</div>
-        <div>
-          <h1>Abastecer Gôndola</h1>
-          <p class="brand-sub">Auditoria de estoque por setor · <span id="dataAtual"></span></p>
-        </div>
-      </div>
-      <div class="audit-picker">
-        <label for="auditSelect" class="sr-only">Auditoria</label>
-        <select id="auditSelect" class="select-dark">
-          <option value="">Nenhuma lista importada</option>
-        </select>
-        <button id="btnDeleteAudit" class="icon-btn-dark" title="Excluir esta lista" hidden>🗑</button>
-        <label class="btn btn-yellow">
-          <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
-          ⬆ Importar planilha
-        </label>
-      </div>
-    </div>
-    <nav class="tabs" role="tablist">
-      <button class="tab is-active" role="tab" data-tab="lista" aria-selected="true">📋 Lista de abastecimento</button>
-      <button class="tab" role="tab" data-tab="dashboard" aria-selected="false">📊 Dashboard de entregas</button>
-    </nav>
-  </header>
-
-  <main class="page">
-    <!-- ===================== LISTA ===================== -->
-    <section id="view-lista" class="view">
-      <div class="filters card">
-        <div class="filter-row">
-          <span class="filter-label">Setor</span>
-          <div id="sectorChips" class="chips" role="group" aria-label="Filtrar por setor"></div>
-        </div>
-        <div class="filter-row">
-          <span class="filter-label">Status</span>
-          <div id="statusChips" class="chips" role="group" aria-label="Filtrar por status"></div>
-        </div>
-        <div class="filter-row filter-row-tools">
-          <div class="search">
-            <span aria-hidden="true">🔎</span>
-            <input type="search" id="textFilter" placeholder="Código, produto ou fornecedor — ex: abacate, 9750, uema" autocomplete="off">
-          </div>
-          <div class="tools">
-            <button class="btn btn-ghost" id="btnPrint">🖨 Imprimir</button>
-            <button class="btn btn-red" id="btnExcel">📥 Baixar Excel</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="print-header">
-        <strong>Abastecer Gôndola — Loja 27</strong>
-        <span id="printInfo"></span>
-      </div>
-
-      <div id="resultInfo" class="result-info"></div>
-      <div id="tableContainer"></div>
-
-      <details class="legend card">
-        <summary>Legenda e critérios</summary>
-        <div class="legend-grid">
-          <div>⚠️ <strong>Sem venda 30d:</strong> produto sem venda no período</div>
-          <div>📦 <strong>&lt;12un:</strong> estoque D-2 abaixo de 12 unidades</div>
-          <div>⏰ <strong>&lt;4d:</strong> dias de estoque abaixo de 4 (giro rápido)</div>
-          <div>📋 <strong>CGO 201:</strong> Compra PJ · <strong>CGO 218:</strong> Compra PF</div>
-          <div>👤 <strong>Fornecedor em branco (—):</strong> produtor rural não cadastrado</div>
-          <div>📷 <strong>Foto da entrega:</strong> enviada pelo setor ao lado de cada item (gôndola abastecida, falta ou avaria)</div>
-        </div>
-      </details>
-    </section>
-
-    <!-- ===================== DASHBOARD ===================== -->
-    <section id="view-dashboard" class="view" hidden>
-      <div id="dashboard"></div>
-    </section>
-  </main>
-
-  <!-- Conferência da importação -->
-  <dialog id="importDialog" class="dialog dialog-wide">
-    <form class="dialog-body" id="importForm">
-      <div class="dialog-head">
-        <h2>Conferir importação</h2>
-        <button type="button" class="icon-btn" data-close aria-label="Fechar">✕</button>
-      </div>
-      <p class="muted">Confira se cada coluna foi reconhecida corretamente. Ajuste o que for preciso antes de salvar.</p>
-      <div class="import-grid">
-        <label class="field">
-          <span>Nome da lista</span>
-          <input type="text" id="importNome" required>
-        </label>
-        <label class="field" id="sheetField">
-          <span>Aba da planilha</span>
-          <select id="importSheet"></select>
-        </label>
-        <label class="field">
-          <span>Linha do cabeçalho</span>
-          <input type="number" id="importHeaderRow" min="1">
-        </label>
-      </div>
-      <div id="mappingGrid" class="mapping-grid"></div>
-      <label class="check">
-        <input type="checkbox" id="importMerge"> Somar itens repetidos (mesmo código e produto)
-      </label>
-      <div id="importStats" class="import-stats"></div>
-      <div id="importPreview" class="preview-wrap"></div>
-      <div class="dialog-actions">
-        <button type="button" class="btn btn-ghost" data-close>Cancelar</button>
-        <button type="submit" id="btnConfirmImport" class="btn btn-red">Salvar lista</button>
-      </div>
-    </form>
-  </dialog>
-
-  <!-- Foto do item -->
-  <dialog id="photoDialog" class="dialog">
-    <div class="dialog-body">
-      <div class="dialog-head">
-        <h2 id="photoTitle">Foto</h2>
-        <button class="icon-btn" data-close aria-label="Fechar">✕</button>
-      </div>
-      <p id="photoMeta" class="muted photo-meta-full"></p>
-      <img id="photoImg" alt="">
-      <div class="dialog-actions">
-        <button class="btn btn-ghost" id="btnPhotoRemove">Remover foto</button>
-        <button class="btn btn-yellow" id="btnPhotoReplace">📷 Trocar foto</button>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- Sem "capture": no celular o sistema oferece câmera ou galeria -->
-  <input type="file" id="photoInput" accept="image/*" hidden>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+<header><div class="hw">
+ <div class="brand"><div class="logo">RE</div><div><div class="eye" id="eye"></div><h1>Relatório de Entrada</h1></div><div class="st off" id="st"><i></i><span>Carregando…</span></div></div>
+ <div class="chips" id="t2"></div>
+</div></header>
+<main>
+ <div class="tabs noprint"><button class="tab on" data-t="rel">📋 Relatório</button><button class="tab" data-t="fot">📷 Fotos</button></div>
+ <div class="drop noprint" id="drop">📂 Arraste a nova planilha (.xlsx) aqui ou <label style="text-decoration:underline;cursor:pointer">escolha o arquivo<input id="file" type="file" accept=".xlsx,.xls,.csv" hidden></label></div>
+ <div class="kpis" id="kpis"></div>
+ <div class="tool">
+  <input type="search" id="q" placeholder="🔎 Buscar produto, código ou fornecedor">
+  <select id="dep"></select>
+  <select id="pf" hidden><option value="">Com e sem foto</option><option value="com">Só com foto</option><option value="sem">Só sem foto</option></select>
+  <label class="tg" id="hl"><input type="checkbox" id="hide"> Ocultar abastecidos</label>
+  <button class="btn" id="reset">Limpar</button>
+  <button class="btn red" id="print">🖨️ Imprimir</button>
+  <div class="prog" id="prog"><span id="pg"></span><div class="pb"><i id="pbar"></i></div></div>
+ </div>
+ <div class="count" id="count"></div>
+ <div class="pt" id="pt"></div>
+ <section id="v-rel"><div class="wrap"><table><thead id="head"></thead><tbody id="body"></tbody></table></div><div class="leg" id="leg"></div></section>
+ <section id="v-fot" hidden><div class="grid" id="grid"></div></section>
+</main>
+<div id="lb"><img id="lbi" alt=""><p id="lbp"></p><div><button class="btn yel" id="lbr">Trocar foto</button><button class="btn" id="lbd">Remover</button><button class="btn red" id="lbx">Fechar</button></div></div>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,doc,setDoc,deleteDoc,collection,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+/* ====== COLE AQUI A CONFIGURAÇÃO DO SEU FIREBASE (veja o LEIAME.md) ====== */
+const FIREBASE_CONFIG={apiKey:"COLE_AQUI",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
+/* ========================================================================= */
+const DEFAULT={"title": ["🍌 Abastecer Gôndola — Loja 27", "Entradas: 02/10/2026 | Estoque ref: 01/10/2026 | Análise: 05/10/2026", "📋 Relatório de segunda-feira: entradas de sexta (D-2) e estoque de quinta (D-3)", "48 produtos entraram | 43 atendem critérios | 19 sem venda 30d | 20 <12un | 22 <4 dias estoque"], "headers": ["Código", "Produto", "Departamento", "Fornecedor", "CGO", "Entrou (un)", "Estoque D-2", "Venda 30d (un)", "Dias c/ Venda", "Média/Dia", "Dias Estoque", "Alertas"], "rows": [[64488, "TOMATE ITALIANO KG", "08 - F L V", "AGUA BRANCA DIST ALIM LTDA", "201 — Compra", 795, -242, 0, 0, 0, "—", "⚠️ SEM VENDA 30D | 📉 <12UN"], [151657, "CAIXA ISOPOR 50L", "13 - SUPRIMENTOS", "KENTISA COM. DE VERDURAS E LEGUMES LTDA", "201 — Compra", 1, 1, 0, 0, 0, "—", "⚠️ SEM VENDA 30D | 📉 <12UN"], [19791, "COUVE FLOR KG", "08 - F L V", "KENTISA COM. DE VERDURAS E LEGUMES LTDA", "201 — Compra", 5, 2, 0, 0, 0, "—", "⚠️ SEM VENDA 30D | 📉 <12UN"], [145434, "ABOBORA SECA KG", "08 - F L V", "SANCHES E MATSUNAGA", "201 — Compra", 20, 4, 0, 0, 0, "—", "⚠️ SEM VENDA 30D | 📉 <12UN"], [22770, "GOIABA VERM KG", "08 - F L V", "FRUTAMINA COMERCIAL AGRICOLA LTDA", "201 — Compra", 18, 8, 0, 0, 0, "—", "⚠️ SEM VENDA 30D | 📉 <12UN"], [19768, "BROCOLIS NINJA KG", "08 - F L V", "KENTISA COM. DE VERDURAS E LEGUMES LTDA", "201 — Compra", 10, 15, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [63243, "ALFACE AMERICANA SP KG", "08 - F L V", "KENTISA COM. DE VERDURAS E LEGUMES LTDA", "201 — Compra", 18, 26, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22868, "CEBOLA ROXA KG", "08 - F L V", "CEREALISTA IRMAOS UEMA LTDA - EPP", "201 — Compra", 40, 36, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22774, "KIWI KG", "08 - F L V", "FRUTART COMERCIO DE PRODUTOS AGRICOLAS L", "201 — Compra", 20, 41, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [19752, "ACELGA KG", "08 - F L V", "KENTISA COM. DE VERDURAS E LEGUMES LTDA", "201 — Compra", 58, 54, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [108731, "VHO PERGOLA 1L TTO SEC", "01 - BEBIDAS", "VENETO DISTRIBUIDORA IMPORTAÇÃO E EXPORTAÇÃO LTDA", "201 — Compra", 120, 60, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22787, "MACA FUJI 120/135/150/16", "08 - F L V", "", "201 — Compra", 186, 142, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22806, "MARACUJA KG", "08 - F L V", "", "201 — Compra", 104, 253, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22907, "TOMATE SALADA KG", "08 - F L V", "BATISTA COM LEGUMES LTDA", "201 — Compra", 270, 254, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22805, "MANGA TOMY KG", "08 - F L V", "FRUTAMINA COMERCIAL AGRICOLA LTDA", "201 — Compra", 123, 254, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22899, "REPOLHO ROXO KG", "08 - F L V", "KENTISA COM. DE VERDURAS E LEGUMES LTDA", "201 — Compra", 43, 298, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [99750, "ABACATE KG", "08 - F L V", "FRUTAMINA COMERCIAL AGRICOLA LTDA", "201 — Compra", 180, 384, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [19762, "BATATA PORT LAVADA KG", "08 - F L V", "CEREALISTA IRMAOS UEMA LTDA - EPP", "201 — Compra", 614, 699, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [19780, "CENOURA KG", "08 - F L V", "", "201 — Compra", 200, 848, 0, 0, 0, "—", "⚠️ SEM VENDA 30D"], [22968, "CHEIRO VERDE UN MISTO", "04 - MATERIA PRIMA", "SHIGEO NAKATANI", "218 — Compra pessoa física", 100, -58, 3395, 28, 121.2, -0.5, "📉 <12UN | ⏰ <4DIAS"], [184670, "TORTA SALG SG FGO UN", "17 - MIGRACAO RO", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 40, -37, 79, 18, 4.4, -8.4, "📉 <12UN | ⏰ <4DIAS"], [184864, "ENROLADO SALSICHA FRITO", "10 - PADARIA", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 90, -26, 149, 27, 5.5, -4.7, "📉 <12UN | ⏰ <4DIAS"], [184474, "SALG COXINHA SG FGO UN", "17 - MIGRACAO RO", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 90, -24, 148, 25, 5.9, -4.1, "📉 <12UN | ⏰ <4DIAS"], [184475, "SALG CROQUETE SG CARN UN", "10 - PADARIA", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 90, -23, 126, 25, 5, -4.6, "📉 <12UN | ⏰ <4DIAS"], [184478, "SALG EMPADA SG FGO UN", "10 - PADARIA", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 60, -19, 94, 25, 3.8, -5.1, "📉 <12UN | ⏰ <4DIAS"], [184660, "PAO PIZZA CALAB UN", "17 - MIGRACAO RO", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 60, -16, 86, 24, 3.6, -4.5, "📉 <12UN | ⏰ <4DIAS"], [19790, "COUVE UN", "08 - F L V", "SHIGEO NAKATANI", "218 — Compra pessoa física", 30, -4, 894, 28, 31.9, -0.1, "📉 <12UN | ⏰ <4DIAS"], [148410, "TOUCINHO SUINO MAGNATA C", "09 - FRIOS & LATICINIOS", "RO IND E COMERCIO DE ALIMENTOS EIRELI", "201 — Compra", 64, 0, 20, 5, 4, 0, "📉 <12UN | ⏰ <4DIAS"], [184668, "PASTEL ASSADO SG FGO UN", "17 - MIGRACAO RO", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 50, 0, 58, 24, 2.4, 0, "📉 <12UN | ⏰ <4DIAS"], [184669, "RISOLE FRITO SG QJO/PRES", "10 - PADARIA", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 90, 1, 122, 25, 4.9, 0.2, "📉 <12UN | ⏰ <4DIAS"], [287130, "COENTRO COLINA VERDE UN", "17 - MIGRACAO RO", "ALEXANDRE MAIA DE ALBUQUERQUE", "218 — Compra pessoa física", 20, 4, 138, 21, 6.6, 0.6, "📉 <12UN | ⏰ <4DIAS"], [188448, "SALG CALZONE RO UN FGO/Q", "17 - MIGRACAO RO", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 60, 6, 55, 21, 2.6, 2.3, "📉 <12UN | ⏰ <4DIAS"], [275737, "SALSA COLINA VERDE UN", "17 - MIGRACAO RO", "ALEXANDRE MAIA DE ALBUQUERQUE", "218 — Compra pessoa física", 10, 7, 8, 6, 1.3, 5.2, "📉 <12UN"], [219367, "LING MISTA MAGNA 500G AP", "17 - MIGRACAO RO", "RO IND E COMERCIO DE ALIMENTOS EIRELI", "201 — Compra", 48, 10, 20, 13, 1.5, 6.5, "📉 <12UN"], [146226, "ALFACE AMERICANA AGROVID", "08 - F L V", "WEBER ANTONIO VELHO", "218 — Compra pessoa física", 25, 12, 283, 24, 11.8, 1, "⏰ <4DIAS"], [184667, "RISOLE FRITO SG CARN UN", "10 - PADARIA", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 90, 12, 96, 28, 3.4, 3.5, "⏰ <4DIAS"], [148848, "COENTRO AGROVIDA UN", "08 - F L V", "WEBER ANTONIO VELHO", "218 — Compra pessoa física", 15, 15, 147, 21, 7, 2.1, "⏰ <4DIAS"], [184651, "QUIBE FRITO SG UN", "10 - PADARIA", "SGANDERLA SGANDERLA LTDA-ME", "201 — Compra", 120, 15, 72, 19, 3.8, 4, "⏰ <4DIAS"], [145446, "SALSINHA MACO", "17 - MIGRACAO RO", "LUIZ PINTO DO NASCIMENTO", "218 — Compra pessoa física", 25, 17, 210, 28, 7.5, 2.3, "⏰ <4DIAS"], [19785, "COENTRO UN", "08 - F L V", "LUIZ PINTO DO NASCIMENTO", "218 — Compra pessoa física", 30, 18, 432, 28, 15.4, 1.2, "⏰ <4DIAS"], [275735, "ALFACE CRESP COL VERD UN", "08 - F L V", "ALEXANDRE MAIA DE ALBUQUERQUE", "218 — Compra pessoa física", 30, 21, 234, 13, 18, 1.2, "⏰ <4DIAS"], [149359, "ALFACE AGROVIDA UN", "08 - F L V", "WEBER ANTONIO VELHO", "218 — Compra pessoa física", 25, 24, 253, 23, 11, 2.2, "⏰ <4DIAS"], [19777, "CHICORIA UN", "08 - F L V", "ALEXANDRE MAIA DE ALBUQUERQUE", "218 — Compra pessoa física", 30, 30, 897, 28, 32, 0.9, "⏰ <4DIAS"]], "legend": ["LEGENDA:", "⚠️ Sem venda 30d = produto sem nenhuma venda no período", "📉 <12un = estoque em D-2 abaixo de 12 unidades", "⏰ <4d = dias de estoque abaixo de 4 (giro rápido)", "CGO 201 = Compra de fornecedor (PJ) | CGO 218 = Compra mercadoria de pessoa física", "Fornecedor em branco (—): o SEQPESSOA da nota é uma pessoa física (produtor rural) que não está cadastrada no cadastro de fornecedores do Datalake.", "Quando o fornecedor aparece, é uma pessoa física cadastrada (ex: Luiz Pinto do Nascimento)."]};
+let D=DEFAULT,RID='base',db=null,canW=false,tab='rel',flt='',sortI=-1,sortD=1,RAW={},PH={},LB=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sid=c=>String(c).replace(/[^\w.\-:@+~]/g,'_');
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',3500)}
+const lk=()=>'ag-done:'+RID;
+function loadLocal(){if(db)return;try{const o=JSON.parse(localStorage.getItem(lk())||'{}');RAW={};for(const k in o)RAW[k]=RID}catch(e){RAW={}}}
+function saveLocal(){if(db)return;try{localStorage.setItem(lk(),JSON.stringify(RAW))}catch(e){}}
+const isDone=k=>RAW[sid(k)]===RID;
+function parse(aoa){
+ const h=aoa.findIndex(r=>String(r[0]).trim()==='Código');
+ if(h<0)throw new Error('cabeçalho "Código" não encontrado');
+ const cl=r=>r.map(c=>c==null?'':(typeof c==='string'?c.trim():c));
+ const title=aoa.slice(0,h).map(r=>cl(r).filter(x=>x!=='').join(' ')).filter(Boolean);
+ const rows=[],legend=[];let inL=false;
+ for(let i=h+1;i<aoa.length;i++){const r=cl(aoa[i]),f=String(r[0]);
+  if(f.startsWith('LEGENDA'))inL=true;
+  if(inL){const t=r.filter(x=>x!=='').join(' ');if(t)legend.push(t)}else if(f!=='')rows.push(r)}
+ const headers=cl(aoa[h]).map(String);
+ if(!headers.some(x=>/produto/i.test(x)))throw new Error('coluna "Produto" não encontrada');
+ return{title,headers,rows,legend}}
+const ix=re=>D.headers.findIndex(h=>re.test(h));
+function C(){return{cod:ix(/^c[óo]digo/i),prod:ix(/produto/i),dep:ix(/depart/i),forn:ix(/fornec/i),cgo:ix(/cgo/i),ent:ix(/entrou/i),est:ix(/estoque d/i),ven:ix(/venda 30/i),dcv:ix(/dias c/i),med:ix(/m[ée]dia/i),die:ix(/dias estoque/i),al:ix(/alerta/i)}}
+const has=(r,k)=>String(r[C().al]||'').toUpperCase().includes(k);
+const KP=[['','Todos os itens',()=>true],['SEM VENDA','Sem venda em 30 dias',r=>has(r,'SEM VENDA')],['<12UN','Estoque abaixo de 12 un',r=>has(r,'<12UN')],['<4DIAS','Menos de 4 dias de estoque',r=>has(r,'<4DIAS')]];
+const badges=s=>String(s).split('|').map(x=>x.trim()).filter(Boolean).map(x=>{const u=x.toUpperCase();return`<span class="bd ${u.includes('SEM VENDA')?'y':u.includes('<12')?'r':'o'}">${esc(x)}</span>`}).join('');
+const fmt=v=>typeof v==='number'?v.toLocaleString('pt-BR',{maximumFractionDigits:1}):esc(v);
+const idOf=r=>String(r[C().cod]);
+function filtered(){
+ const c=C(),q=$('q').value.toLowerCase().trim(),dp=$('dep').value,hd=$('hide').checked,pf=$('pf').value,k=KP.find(x=>x[0]===flt)||KP[0];
+ let r=D.rows.filter(x=>(tab==='fot'||k[2](x))&&(!dp||x[c.dep]===dp)&&(tab==='fot'||!hd||!isDone(idOf(x)))&&(tab==='rel'||!pf||(pf==='com')===!!PH[sid(idOf(x))])&&(!q||x.join(' ').toLowerCase().includes(q)));
+ if(sortI>=0&&tab==='rel')r=[...r].sort((a,b)=>{const x=a[sortI],y=b[sortI],nx=typeof x==='number',ny=typeof y==='number';
+  if(nx&&ny)return(x-y)*sortD;if(nx!==ny)return nx?-1:1;return String(x).localeCompare(String(y),'pt')*sortD});
+ return r}
+const COLS=()=>{const c=C();return[['✔',-1,'noprint'],['Código',c.cod,'x'],['Produto',c.prod],['Entrou',c.ent],['Estoque D-2',c.est],['Venda 30d',c.ven],['Dias c/ venda',c.dcv,'x'],['Média/dia',c.med],['Dias estoque',c.die],['Alertas',c.al]]};
+function status(){const s=$('st');
+ if(db){s.className='st';s.querySelector('span').textContent=canW?'Ao vivo · edição liberada':'Ao vivo · somente leitura'}
+ else{s.className='st off';s.querySelector('span').textContent='Modo local (sem sincronização)'}}
+function render(){
+ const c=C(),t=D.title;
+ $('eye').textContent=(t[0]||'').replace(/^[^\p{L}\p{N}]+/u,'');
+ $('t2').innerHTML=t.slice(1).join(' | ').split('|').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="chip">${esc(s)}</span>`).join('');
+ const rel=tab==='rel';
+ $('v-rel').hidden=!rel;$('v-fot').hidden=rel;$('kpis').hidden=!rel;$('hl').hidden=!rel;$('prog').hidden=!rel;$('pf').hidden=rel;
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+ $('drop').hidden=!(canW||!db);
+ $('kpis').innerHTML=KP.map(k=>`<button class="kpi ${flt===k[0]?'on':''}" data-k="${k[0]}"><b>${D.rows.filter(k[2]).length}</b><span>${k[1]}</span></button>`).join('');
+ const deps=[...new Set(D.rows.map(r=>r[c.dep]).filter(Boolean))].sort(),cur=$('dep').value;
+ $('dep').innerHTML='<option value="">Todos os departamentos</option>'+deps.map(d=>`<option ${d===cur?'selected':''}>${esc(d)}</option>`).join('');
+ const r=filtered();let txt;
+ if(rel){
+  $('head').innerHTML='<tr>'+COLS().map(([l,i,cl])=>`<th class="${cl||''}" ${i>=0?`data-i="${i}"`:''}>${l}${sortI===i&&i>=0?(sortD>0?' ▲':' ▼'):''}</th>`).join('')+'</tr>';
+  const g={};r.forEach(x=>(g[x[c.dep]||'Sem departamento']=g[x[c.dep]||'Sem departamento']||[]).push(x));
+  const n=COLS().length;let h='';
+  Object.keys(g).sort().forEach(d=>{
+   h+=`<tr class="g"><td colspan="${n}">${esc(d)}<small>${g[d].length} ${g[d].length>1?'itens':'item'}</small></td></tr>`;
+   g[d].forEach(x=>{const k=idOf(x),s=sid(k),sv=has(x,'SEM VENDA')?'sy':(has(x,'<12UN')||has(x,'<4DIAS')?'sr':''),dn=isDone(k),nm=(v,l,cl='')=>`<td class="n ${cl} ${typeof v==='number'&&v<0?'neg':''}" data-l="${l}">${fmt(v)}</td>`;
+    const th=PH[s]?`<img class="th" src="${PH[s]}" data-lb="${esc(k)}" alt="">`:(db&&canW?`<button class="cam noprint" data-cam="${esc(k)}" title="Adicionar foto">📷</button>`:'');
+    h+=`<tr class="it ${sv} ${dn?'done':''}"><td class="ck noprint"><input type="checkbox" data-id="${esc(k)}" ${dn?'checked':''} ${db&&!canW?'disabled':''}></td>
+    <td class="cd x">${esc(x[c.cod])}</td>
+    <td class="pr"><div class="pw">${th}<div><b>${esc(x[c.prod])}</b><small>${esc(x[c.cod])}${x[c.forn]?' · '+esc(x[c.forn]):''}${c.cgo>=0&&x[c.cgo]?' · '+esc(x[c.cgo]):''}</small></div></div></td>
+    ${nm(x[c.ent],'Entrou')}${nm(x[c.est],'Estoque')}${nm(x[c.ven],'Venda 30d')}${nm(x[c.dcv],'Dias c/ venda','x')}${nm(x[c.med],'Média/dia')}${nm(x[c.die],'Dias est.')}
+    <td class="al">${badges(x[c.al])}</td></tr>`})});
+  $('body').innerHTML=h||`<tr><td colspan="${n}" style="padding:20px;text-align:center">Nenhum item encontrado.</td></tr>`;
+  const dn=D.rows.filter(x=>isDone(idOf(x))).length,pc=D.rows.length?Math.round(dn/D.rows.length*100):0;
+  $('pg').textContent=`${dn} de ${D.rows.length} abastecidos (${pc}%)`;$('pbar').style.width=pc+'%';
+  const k=KP.find(x=>x[0]===flt);txt=`${r.length} de ${D.rows.length} itens${flt?' · '+k[1]:''}${$('dep').value?' · '+$('dep').value:''}`;
+  $('leg').innerHTML=D.legend.map(esc).join('<br>')}
+ else{
+  const np=D.rows.filter(x=>PH[sid(idOf(x))]).length;
+  $('grid').innerHTML=r.map(x=>{const k=idOf(x),s=sid(k),p=PH[s];
+   return`<div class="ph ${p?'':'no'}"><button class="pi" ${p?`data-lb="${esc(k)}"`:(db&&canW?`data-cam="${esc(k)}"`:'disabled')}>${p?`<img src="${p}" alt="">`:(db&&canW?'📷 Adicionar foto':'Sem foto')}</button>
+   <div class="pc"><b>${esc(x[c.prod])}</b><small>${esc(x[c.cod])} · ${esc(x[c.dep]||'')}</small><div>${badges(x[c.al])}</div></div></div>`}).join('')||'<p>Nenhum produto encontrado.</p>';
+  txt=`${r.length} produtos · ${np} de ${D.rows.length} com foto`}
+ $('count').textContent=txt;$('pt').textContent=txt+' · Impresso em '+new Date().toLocaleString('pt-BR');
+ status()}
+function shrink(f){return new Promise((ok,no)=>{const u=URL.createObjectURL(f),im=new Image();
+ im.onload=()=>{const s=Math.min(1,900/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
+  cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);let q=.75,o=cv.toDataURL('image/jpeg',q);
+  while(o.length>170000&&q>.3){q-=.1;o=cv.toDataURL('image/jpeg',q)}URL.revokeObjectURL(u);o.length>230000?no(new Error('foto muito grande')):ok(o)};
+ im.onerror=()=>no(new Error('imagem inválida'));im.src=u})}
+function pick(code){const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{if(!i.files[0])return;try{toast('Enviando foto…');const img=await shrink(i.files[0]);await db.doc('photos/'+sid(code)).set({img,ts:Date.now()});toast('Foto salva para todos ✔')}catch(e){fail(e)}};i.click()}
+function fail(e){const c=e&&e.code;if(c==='invalid_argument'||c==='permission-denied'){canW=false;render();toast('Você está em modo somente leitura.')}else if(c==='quota_exceeded'||c==='resource-exhausted')toast('Limite de armazenamento atingido.');else toast('Não foi possível salvar: '+((e&&e.message)||'erro'))}
+function openLb(k){const s=sid(k),r=D.rows.find(x=>idOf(x)===String(k));if(!PH[s])return;LB=k;$('lbi').src=PH[s];$('lbp').textContent=r?r[C().prod]:k;$('lbr').hidden=$('lbd').hidden=!(db&&canW);$('lb').classList.add('on')}
+document.addEventListener('click',e=>{
+ const k=e.target.closest('.kpi');if(k){flt=k.dataset.k;render();return}
+ const th=e.target.closest('th[data-i]');if(th){const i=+th.dataset.i;sortD=sortI===i?-sortD:1;sortI=i;render();return}
+ const tb=e.target.closest('.tab');if(tb){tab=tb.dataset.t;render();return}
+ const cm=e.target.closest('[data-cam]');if(cm){pick(cm.dataset.cam);return}
+ const lb=e.target.closest('[data-lb]');if(lb){openLb(lb.dataset.lb)}});
+$('lbx').onclick=()=>$('lb').classList.remove('on');
+$('lb').onclick=e=>{if(e.target.id==='lb')$('lb').classList.remove('on')};
+$('lbr').onclick=()=>{$('lb').classList.remove('on');pick(LB)};
+$('lbd').onclick=async()=>{if(!confirm('Remover esta foto para todos?'))return;try{await db.doc('photos/'+sid(LB)).delete();$('lb').classList.remove('on')}catch(e){fail(e)}};
+document.addEventListener('change',async e=>{const cb=e.target.closest('input[data-id]');if(!cb)return;const s=sid(cb.dataset.id);
+ if(db){try{cb.checked?await db.doc('done/'+s).set({rid:RID,ts:Date.now()}):await db.doc('done/'+s).delete()}catch(er){cb.checked=!cb.checked;fail(er)}}
+ else{cb.checked?RAW[s]=RID:delete RAW[s];saveLocal();render()}});
+$('q').oninput=render;$('dep').onchange=render;$('hide').onchange=render;$('pf').onchange=render;
+$('reset').onclick=()=>{$('q').value='';$('dep').value='';$('hide').checked=false;$('pf').value='';flt='';sortI=-1;render()};
+$('print').onclick=()=>window.print();
+function load(f){if(!f)return;const rd=new FileReader();rd.onload=async e=>{try{
+ const wb=XLSX.read(e.target.result,{type:'array'});
+ const nd=parse(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''}));
+ flt='';sortI=-1;$('q').value='';$('dep').value='';
+ if(db&&canW){const js=JSON.stringify(nd);if(js.length>240000)throw new Error('planilha grande demais');
+  await db.doc('report/current').set({json:js,rid:Date.now().toString(36),name:f.name,ts:Date.now()});toast('Planilha publicada para todos ✔')}
+ else{D=nd;RID='local';loadLocal();render();toast('Prévia local — não foi enviada para os outros.')}
+ }catch(err){if(err&&err.code)fail(err);else alert('Não consegui ler a planilha: '+err.message)}};rd.readAsArrayBuffer(f)}
+$('file').onchange=e=>{load(e.target.files[0]);e.target.value=''};
+const dr=$('drop');
+['dragover','dragenter'].forEach(v=>dr.addEventListener(v,e=>{e.preventDefault();dr.classList.add('over')}));
+['dragleave','drop'].forEach(v=>dr.addEventListener(v,e=>{e.preventDefault();dr.classList.remove('over')}));
+dr.addEventListener('drop',e=>load(e.dataTransfer.files[0]));
+loadLocal();render();
+(function(){
+ if(!FIREBASE_CONFIG.apiKey||FIREBASE_CONFIG.apiKey.startsWith('COLE')){render();return}
+ try{
+  const fs=getFirestore(initializeApp(FIREBASE_CONFIG));
+  const mk=p=>{const [c,i]=p.split('/');const r=doc(fs,c,i);return{set:d=>setDoc(r,d),delete:()=>deleteDoc(r),onSnapshot:(n,e)=>onSnapshot(r,x=>n({exists:x.exists(),data:()=>x.data()}),e)}};
+  db={doc:mk,collection:c=>({onSnapshot:(n,e)=>onSnapshot(collection(fs,c),x=>n({docs:x.docs.map(d=>({id:d.id,data:()=>d.data()}))}),e)})};
+  canW=true;RAW={};render();
+  const er=e=>toast('Sem acesso ao banco de dados: '+((e&&e.code)||'erro'));
+  db.doc('report/current').onSnapshot(x=>{const v=x.exists&&x.data();
+   if(v&&v.json){try{D=JSON.parse(v.json);RID=v.rid||'x'}catch(e){}}else{D=DEFAULT;RID='base'}render()},er);
+  db.collection('done').onSnapshot(x=>{RAW={};x.docs.forEach(d=>{const v=d.data();if(v)RAW[d.id]=v.rid});render()},er);
+  db.collection('photos').onSnapshot(x=>{PH={};x.docs.forEach(d=>{const v=d.data();if(v&&v.img)PH[d.id]=v.img});render()},er);
+ }catch(e){db=null;render()}
+})();
+</script>
 </body>
 </html>
